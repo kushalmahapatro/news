@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_news"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="News" />
+        <item
+            android:id="@+id/nav_entertainment"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Entertainment" />
+        <item
+            android:id="@+id/nav_business"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Business" />
+        <item
+            android:id="@+id/nav_sports"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Sports" />
+        <item
+            android:id="@+id/nav_technology"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Technology" />
+        <item
+            android:id="@+id/nav_health"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Health" />
+        <item
+            android:id="@+id/nav_science"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Science" />
+    </group>
+
+    <item android:title="Settings">
+        <menu>
+            <item
+                android:id="@+id/nav_night"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Night Mode" />
+        </menu>
+    </item>
+
+</menu>
