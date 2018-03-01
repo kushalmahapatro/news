@@ -1,5 +1,7 @@
 package app.km.in.dailybharat;
 
+import android.app.UiModeManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,15 +26,15 @@ public class NightSettingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        sp= getSharedPreferences("NightMode", MODE_PRIVATE);
-        String nightValue= sp.getString("value","off");
-        if (nightValue.equalsIgnoreCase("off")){
+        sp = getSharedPreferences("NightMode", MODE_PRIVATE);
+        String nightValue = sp.getString("value", "off");
+        if (nightValue.equalsIgnoreCase("off")) {
             AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate.MODE_NIGHT_NO);
-        }else  if (nightValue.equalsIgnoreCase("on")){
+        } else if (nightValue.equalsIgnoreCase("on")) {
             AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate.MODE_NIGHT_YES);
-        }else if (nightValue.equalsIgnoreCase("auto")){
+        } else if (nightValue.equalsIgnoreCase("auto")) {
             AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate.MODE_NIGHT_AUTO);
         }
@@ -53,11 +55,11 @@ public class NightSettingActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         night.setAdapter(adapter);
-        if (nightValue.equalsIgnoreCase("off")){
-           night.setSelection(0);
-        }else  if (nightValue.equalsIgnoreCase("on")){
+        if (nightValue.equalsIgnoreCase("off")) {
+            night.setSelection(0);
+        } else if (nightValue.equalsIgnoreCase("on")) {
             night.setSelection(1);
-        }else if (nightValue.equalsIgnoreCase("auto")){
+        } else if (nightValue.equalsIgnoreCase("auto")) {
             night.setSelection(2);
         }
 
@@ -65,41 +67,19 @@ public class NightSettingActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 int pos = adapterView.getSelectedItemPosition();
-                SharedPreferences.Editor edit= sp.edit();
+
                 switch (pos) {
                     case 0:
-                        AppCompatDelegate.setDefaultNightMode(
-                                AppCompatDelegate.MODE_NIGHT_NO);
-                        setTheme( AppCompatDelegate.getDefaultNightMode());
-                        edit.putString("value","off");
-                        edit.apply();
-                        edit.commit();
+                        changeThemeAndPreferenceValue("off");
                         break;
                     case 1:
-                        AppCompatDelegate.setDefaultNightMode(
-                                AppCompatDelegate.MODE_NIGHT_YES);
-                        setTheme( AppCompatDelegate.getDefaultNightMode());
-                        edit.putString("value","on");
-                        edit.apply();
-                        edit.commit();
-
+                        changeThemeAndPreferenceValue("on");
                         break;
                     case 2:
-                        setTheme( AppCompatDelegate.getDefaultNightMode());
-                        AppCompatDelegate.setDefaultNightMode(
-                                AppCompatDelegate.MODE_NIGHT_AUTO);
-                        edit.putString("value","on");
-                        edit.apply();
-                        edit.commit();
-
+                        changeThemeAndPreferenceValue("auto");
                         break;
                     default:
-                        setTheme( AppCompatDelegate.getDefaultNightMode());
-                        AppCompatDelegate.setDefaultNightMode(
-                                AppCompatDelegate.MODE_NIGHT_NO);
-                        edit.putString("value","off");
-                        edit.apply();
-                        edit.commit();
+                        changeThemeAndPreferenceValue("off");
 
                 }
             }
@@ -109,6 +89,31 @@ public class NightSettingActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void changeThemeAndPreferenceValue(String value) {
+
+        UiModeManager umm = (UiModeManager) getApplicationContext().getSystemService(Context.UI_MODE_SERVICE);
+        assert umm != null;
+        SharedPreferences.Editor edit = sp.edit();
+        if (value.equalsIgnoreCase("off")) {
+            umm.setNightMode(UiModeManager.MODE_NIGHT_NO);
+            edit.putString("value", "off");
+            edit.apply();
+            edit.commit();
+
+        } else if (value.equalsIgnoreCase("on")) {
+            umm.setNightMode(UiModeManager.MODE_NIGHT_YES);
+            edit.putString("value", "on");
+            edit.apply();
+            edit.commit();
+
+        } else if (value.equalsIgnoreCase("auto")) {
+            umm.setNightMode(UiModeManager.MODE_NIGHT_AUTO);
+            edit.putString("value", "on");
+            edit.apply();
+            edit.commit();
+        }
     }
 
     @Override
@@ -125,7 +130,7 @@ public class NightSettingActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         Intent intent = new Intent(NightSettingActivity.this, MainActivity.class);
-        intent.putExtra("Data",SplashActivity.ja.toString());
+        intent.putExtra("Data", SplashActivity.ja.toString());
         startActivity(intent);
     }
 }

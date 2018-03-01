@@ -1,11 +1,15 @@
 package app.km.in.dailybharat;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.ParseException;
+import android.net.Uri;
+import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
@@ -24,6 +28,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -73,6 +79,7 @@ public class VerticalPagerAdapter extends PagerAdapter {
         final TextView timestamp= itemView.findViewById(R.id.time);
         final TextView author= itemView.findViewById(R.id.author);
         final RelativeLayout button= itemView.findViewById(R.id.list_container);
+        final CardView shareButton= itemView.findViewById(R.id.shareCard);
         label.setText(News.get(position).getNews_description());
         title.setText(News.get(position).getNews_title());
         cat.setText(Category);
@@ -100,6 +107,13 @@ public class VerticalPagerAdapter extends PagerAdapter {
                 final Intent intent = new Intent(mContext, WebActivity.class);
                 intent.putExtra(WebActivity.BUNDLE_IMAGE_ID, News.get(position).getNews_url());
                 mContext.startActivity(intent);
+            }
+        });
+
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takeScreenShotAndShareImage(MainActivity.rootView);
             }
         });
 
@@ -153,6 +167,54 @@ public class VerticalPagerAdapter extends PagerAdapter {
 
         return itemView;
     }
+
+    private void takeScreenShotAndShareImage(View view) {
+        Bitmap screenShot= getScreenShot(view);
+        File file= store(screenShot,"DailyBharat.png");
+        shareImage(file);
+
+    }
+    public static Bitmap getScreenShot(View view) {
+        View screenView = view.getRootView();
+        screenView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = Bitmap.createBitmap(screenView.getDrawingCache());
+        screenView.setDrawingCacheEnabled(false);
+        return bitmap;
+    }
+
+    public static File store(Bitmap bm, String fileName){
+        final String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() ;
+        File dir = new File(dirPath);
+        if(!dir.exists())
+            dir.mkdirs();
+        File file = new File(dirPath, fileName);
+        try {
+            FileOutputStream fOut = new FileOutputStream(file);
+            bm.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+            fOut.flush();
+            fOut.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
+    private void shareImage(File file){
+        Uri uri = FileProvider.getUriForFile(mContext, mContext.getApplicationContext().getPackageName() + ".my.package.name.provider", file);
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("image/*");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        try {
+            mContext.startActivity(Intent.createChooser(intent, "Share Screenshot"));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(mContext, "No App Available", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     public static Date parseDate(String strDate, String pattern) {
         /* Return object of Date */

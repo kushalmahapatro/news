@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     List<NewsDetailsModel> newsDetailsArrayList;
     ProgressDialog pd;
     SharedPreferences sp;
+    public static View rootView;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         setTitle("");
         initViewPager();
+        rootView = getWindow().getDecorView().findViewById(android.R.id.content);
     }
 
     private void getBundle() throws JSONException {
