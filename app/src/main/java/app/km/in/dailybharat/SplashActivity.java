@@ -123,7 +123,7 @@ public class SplashActivity extends AppCompatActivity {
                                 int total= jsonRes.getInt("totalResults");
                                 if (status.equals("ok")) {
                                     ja = jsonRes.getJSONArray("articles");
-                                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                                    Intent intent = new Intent(SplashActivity.this, StartingActivity.class);
                                     intent.putExtra("Data",ja.toString());
                                     startActivity(intent);
 

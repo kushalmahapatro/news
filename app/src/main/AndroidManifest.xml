@@ -35,6 +35,7 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".WebActivity" />
         <activity android:name=".NightSettingActivity" />
+        <activity android:name=".StartingActivity" />
     </application>
 
 </manifest>
