@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DailyBharat 2.iml" filepath="$PROJECT_DIR$/DailyBharat 2.iml" />
+      <module fileurl="file://C:\Users\Muvi Guest\Desktop\Kushal\News\news\DailyBharat 2.iml" filepath="C:\Users\Muvi Guest\Desktop\Kushal\News\news\DailyBharat 2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\Muvi Guest\Desktop\Kushal\News\news\app\app.iml" filepath="C:\Users\Muvi Guest\Desktop\Kushal\News\news\app\app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/news.iml" filepath="$PROJECT_DIR$/.idea/news.iml" />
     </modules>
   </component>
 </project>
