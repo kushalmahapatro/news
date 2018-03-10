@@ -31,7 +31,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Glide.with(mContext).load(Images.get(position).getImageUrl()).thumbnail(1).centerCrop().into(holder.image);
+        Glide.with(mContext).load(Images.get(position).getImageUrl()).thumbnail(1).centerCrop().error(R.drawable.notfound).placeholder(R.drawable.default1).into(holder.image);
     }
 
     @Override

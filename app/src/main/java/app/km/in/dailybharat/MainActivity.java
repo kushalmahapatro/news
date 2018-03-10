@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity
     ProgressDialog pd;
     SharedPreferences sp;
     public static View rootView;
+    String type;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,16 +88,31 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        setSelectedNavigation(type, navigationView);
         setTitle("");
         initViewPager();
         rootView = getWindow().getDecorView().findViewById(android.R.id.content);
+    }
+
+    private void setSelectedNavigation(String type, NavigationView navigationView) {
+        switch (type) {
+            case "entertainment":
+                navigationView.setCheckedItem(R.id.nav_entertainment);
+                break;
+            case "business":
+                navigationView.setCheckedItem(R.id.nav_business);
+                break;
+            case "news":
+               navigationView.setCheckedItem(R.id.nav_news);
+                break;
+        }
     }
 
     private void getBundle() throws JSONException {
         Bundle b= getIntent().getExtras();
         if (b!=null){
             String D= b.getString("Data");
+            type= b.getString("type");
             JSONArray ja = new JSONArray(D);
             NewsDetailsModel newsModel;
             newsDetailsArrayList = new ArrayList<NewsDetailsModel>();

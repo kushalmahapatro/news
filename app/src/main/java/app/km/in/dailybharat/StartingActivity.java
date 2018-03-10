@@ -40,7 +40,7 @@ import me.relex.circleindicator.CircleIndicator;
  * Created by Sexy_Virus on 08/03/18.
  */
 
-public class StartingActivity extends AppCompatActivity {
+public class StartingActivity extends AppCompatActivity implements VolleyResponse {
     private static ViewPager mPager;
     private static int currentPage = 0;
     private ArrayList<String> bannerImages = new ArrayList<String>();
@@ -48,22 +48,22 @@ public class StartingActivity extends AppCompatActivity {
 
     RecyclerAdapter adapter;
     RecyclerView entertainmentRecycler, newsRecycler, businessRecycler;
-    LinearLayoutManager layoutManager
-            = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-    JSONArray ja, jaE;
-    Button ent;
+    JSONArray ja, jaE, jaN, jaB;
+    Button ent, bus, news;
+    RequestQueue mQueue;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences sp= getSharedPreferences("NightMode", MODE_PRIVATE);
-        String nightValue= sp.getString("value","off");
-        if (nightValue.equalsIgnoreCase("off")){
+        SharedPreferences sp = getSharedPreferences("NightMode", MODE_PRIVATE);
+        String nightValue = sp.getString("value", "off");
+        if (nightValue.equalsIgnoreCase("off")) {
             AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate.MODE_NIGHT_NO);
-        }else  if (nightValue.equalsIgnoreCase("on")){
+        } else if (nightValue.equalsIgnoreCase("on")) {
             AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate.MODE_NIGHT_YES);
-        }else if (nightValue.equalsIgnoreCase("auto")){
+        } else if (nightValue.equalsIgnoreCase("auto")) {
             AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate.MODE_NIGHT_AUTO);
         }
@@ -76,214 +76,77 @@ public class StartingActivity extends AppCompatActivity {
 
         init();
         setBannerImages();
-       // getData("Entertainment");
-     //   getData("Business");
-      //  getData("News");
+        mQueue = Volley.newRequestQueue(getApplicationContext());
+        getData("entertainment");
+        getData("business");
+        getData("news");
 
-       getEntertainmentData();
 
     }
 
-
-    private void getBusinessData() {
-        final ArrayList<String> imagesUrl= new ArrayList<>();
-        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        String url="https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=1e2be97ff1724f6e883cecb345e1e65a";
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject jsonRes)
-                    {
-
-                        try {
-                            String status = jsonRes.getString("status");
-                            int total= jsonRes.getInt("totalResults");
-                            if (status.equals("ok")) {
-                                JSONArray ja = jsonRes.getJSONArray("articles");
-                                for (int i = 0; i < ja.length(); i++) {
-                                    JSONObject jsonObject = ja.getJSONObject(i);
-                                    imagesUrl.add(jsonObject.getString("urlToImage"));
-                                    setRecyclerView(businessRecycler,imagesUrl);
-                                }
-
-                            }
-                        }
-                        catch (JSONException e)
-                        {
-                            e.printStackTrace();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-
-                        //addedToAdapter(newsDetailsArrayList);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(getApplicationContext(), "Something Wrong: " + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        // add it to the RequestQueue
-        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(getRequest,"business");
-        getRequest.setRetryPolicy(
-                new DefaultRetryPolicy(2 * 1000, 1, 1.0f));
-    }
-
-    private void getEntertainmentData() {
-
-        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        String url="https://newsapi.org/v2/top-headlines?country=in&category=entertainment&apiKey=1e2be97ff1724f6e883cecb345e1e65a";
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject jsonRes)
-                    {
-
-                        try {
-                            String status = jsonRes.getString("status");
-                            int total= jsonRes.getInt("totalResults");
-                            final ArrayList<String> imagesUrl= new ArrayList<>();
-                            if (status.equals("ok")) {
-                                JSONArray ja = jsonRes.getJSONArray("articles");
-                                for (int i = 0; i < ja.length(); i++) {
-                                    JSONObject jsonObject = ja.getJSONObject(i);
-                                    imagesUrl.add(jsonObject.getString("urlToImage"));
-                                    setRecyclerView(entertainmentRecycler,imagesUrl);
-                                    ent.setVisibility(View.VISIBLE);
-                                    jaE=ja;
-                                }
-
-                            }
-                        }
-                        catch (JSONException e)
-                        {
-                            e.printStackTrace();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-
-                        //addedToAdapter(newsDetailsArrayList);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(getApplicationContext(), "Something Wrong: " + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        // add it to the RequestQueue
-        queue.add(getRequest);
-       /* AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(getRequest,"ent");
-        getRequest.setRetryPolicy(
-                new DefaultRetryPolicy(2 * 1000, 1, 1.0f));*/
-    }
 
     private void getData(String type) {
         String url = null;
-        switch (type){
-            case "Entertainment":
-                url="https://newsapi.org/v2/top-headlines?country=in&category=entertainment&apiKey=1e2be97ff1724f6e883cecb345e1e65a";
+        switch (type) {
+            case "entertainment":
+                url = "https://newsapi.org/v2/top-headlines?country=in&category=entertainment&apiKey=1e2be97ff1724f6e883cecb345e1e65a";
                 break;
-            case "Business":
-                url="https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=1e2be97ff1724f6e883cecb345e1e65a";
+            case "business":
+                url = "https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=1e2be97ff1724f6e883cecb345e1e65a";
                 break;
-            case "News":
-                url="https://newsapi.org/v2/top-headlines?country=in&apiKey=27e55646d2a24b8eb1c8d26457d6d318";
+            case "news":
+                url = "https://newsapi.org/v2/top-headlines?country=in&apiKey=27e55646d2a24b8eb1c8d26457d6d318";
                 break;
         }
-        networkAction(url,type);
+        networkAction(url, type);
 
 
     }
 
     private void setRecyclerView(RecyclerView view, ArrayList<String> images) {
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         view.setLayoutManager(layoutManager);
-        adapter= new RecyclerAdapter(getApplicationContext(),getData(images));
+        adapter = new RecyclerAdapter(getApplicationContext(), getData(images));
         view.setAdapter(adapter);
 
     }
 
     private ArrayList<ImagesModel> getData(ArrayList<String> url) {
-        ArrayList<ImagesModel> Data= new ArrayList<>();
-        for (int i=0; i<url.size();i++){
-            ImagesModel image= new ImagesModel(url.get(i));
+        ArrayList<ImagesModel> Data = new ArrayList<>();
+        for (int i = 0; i < url.size(); i++) {
+            ImagesModel image = new ImagesModel(url.get(i));
             Data.add(image);
         }
         return Data;
     }
 
     private void networkAction(String url, final String type) {
-        final ArrayList<String> imagesUrl= new ArrayList<>();
-        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject jsonRes)
-                    {
-
-                        try {
-                            String status = jsonRes.getString("status");
-                            int total= jsonRes.getInt("totalResults");
-                            if (status.equals("ok")) {
-                                JSONArray ja = jsonRes.getJSONArray("articles");
-                                for (int i = 0; i < ja.length(); i++) {
-                                    JSONObject jsonObject = ja.getJSONObject(i);
-                                    imagesUrl.add(jsonObject.getString("urlToImage"));
-                                    switch (type){
-                                        case "Entertainment":
-                                            setRecyclerView(entertainmentRecycler,imagesUrl);
-                                        case "Business":
-                                            setRecyclerView(businessRecycler,imagesUrl);
-                                        case "News":
-                                            setRecyclerView(newsRecycler,imagesUrl);
-                                    }
-
-                                }
-
-                            }
-                        }
-                        catch (JSONException e)
-                        {
-                            e.printStackTrace();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-
-                        //addedToAdapter(newsDetailsArrayList);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(getApplicationContext(), "Something Wrong: " + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        // add it to the RequestQueue
-        //queue.add(getRequest);
-        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(getRequest,type);
-        getRequest.setRetryPolicy(
-                new DefaultRetryPolicy(2 * 1000, 1, 1.0f));
+        CustomJSONObjectRequest request1 = new CustomJSONObjectRequest(Request.Method.GET, url,
+                new JSONObject(), type, this);
+        mQueue.add(request1.getJsonObjectRequest());
     }
 
     private void init() {
 
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPager.setAdapter(new BannerAdapter(StartingActivity.this,bannerImages,bannerTitle));
+        mPager.setAdapter(new BannerAdapter(StartingActivity.this, bannerImages, bannerTitle));
         CircleIndicator indicator = (CircleIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
-        entertainmentRecycler= findViewById(R.id.entertainment_recycler);
-        newsRecycler= findViewById(R.id.news_recycler);
-        businessRecycler= findViewById(R.id.business_recycler);
-        ent= findViewById(R.id.entButton);
+        entertainmentRecycler = findViewById(R.id.entertainment_recycler);
+        newsRecycler = findViewById(R.id.news_recycler);
+        businessRecycler = findViewById(R.id.business_recycler);
+        ent = findViewById(R.id.entButton);
+        bus= findViewById(R.id.busBtn);
+        news=findViewById(R.id.newsBtn);
         ent.setVisibility(View.GONE);
+        bus.setVisibility(View.GONE);
+        news.setVisibility(View.GONE);
 
         // Auto start of viewpager
 
     }
+
     private void setBannerImages() {
         final Handler handler = new Handler();
         final Runnable Update = new Runnable() {
@@ -305,9 +168,9 @@ public class StartingActivity extends AppCompatActivity {
 
 
     private void getBundle() throws JSONException {
-        Bundle b= getIntent().getExtras();
-        if (b!=null){
-            String D= b.getString("Data");
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            String D = b.getString("Data");
             ja = new JSONArray(D);
             for (int i = 0; i < ja.length(); i++) {
                 JSONObject jsonObject = ja.getJSONObject(i);
@@ -317,9 +180,63 @@ public class StartingActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onResponse(JSONObject jsonRes, String tag) {
+        final ArrayList<String> imagesUrl = new ArrayList<>();
+        try {
+            String status = jsonRes.getString("status");
+            int total = jsonRes.getInt("totalResults");
+            if (status.equals("ok")) {
+                JSONArray ja = jsonRes.getJSONArray("articles");
+                for (int i = 0; i < ja.length(); i++) {
+                    JSONObject jsonObject = ja.getJSONObject(i);
+                    imagesUrl.add(jsonObject.getString("urlToImage"));
+                    if (tag.equalsIgnoreCase("entertainment")) {
+                        setRecyclerView(entertainmentRecycler, imagesUrl);
+                        ent.setVisibility(View.VISIBLE);
+                        jaE = ja;
+                    }
+                    else if (tag.equalsIgnoreCase("business")) {
+                        setRecyclerView(businessRecycler, imagesUrl);
+                        bus.setVisibility(View.VISIBLE);
+                        jaB = ja;
+                    } else if (tag.equalsIgnoreCase("news")) {
+                        setRecyclerView(newsRecycler, imagesUrl);
+                        news.setVisibility(View.VISIBLE);
+                        jaN = ja;
+                    }
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onError(VolleyError error, String tag) {
+        Toast.makeText(getApplicationContext(), "Something Wrong: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+    }
     public void EntertainmentButton(View view) {
         Intent intent = new Intent(StartingActivity.this, MainActivity.class);
-        intent.putExtra("Data",jaE.toString());
+        intent.putExtra("Data", jaE.toString());
+        intent.putExtra("type", "entertainment");
+        startActivity(intent);
+    }
+    public void BusinessButton(View view) {
+        Intent intent = new Intent(StartingActivity.this, MainActivity.class);
+        intent.putExtra("Data", jaB.toString());
+        intent.putExtra("type", "business");
+        startActivity(intent);
+    }
+
+    public void NewsButton(View view) {
+        Intent intent = new Intent(StartingActivity.this, MainActivity.class);
+        intent.putExtra("Data", jaN.toString());
+        intent.putExtra("type", "news");
         startActivity(intent);
     }
 }
