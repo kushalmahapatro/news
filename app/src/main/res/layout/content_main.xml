@@ -5,11 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="app.km.in.dailybharat.MainActivity">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <app.km.in.dailybharat.VerticalViewPagerMy
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
         android:id="@+id/verticleViewPager"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_dehaze_black_24dp"
+        android:background="#536dfe"
+        android:padding="5dp"
+        android:layout_margin="10dp"
+        android:id="@+id/toggleButton"/>
+</RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

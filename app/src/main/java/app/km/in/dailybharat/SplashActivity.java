@@ -126,6 +126,7 @@ public class SplashActivity extends AppCompatActivity {
                                     Intent intent = new Intent(SplashActivity.this, StartingActivity.class);
                                     intent.putExtra("Data",ja.toString());
                                     startActivity(intent);
+                                    finish();
 
                                 }
                             }

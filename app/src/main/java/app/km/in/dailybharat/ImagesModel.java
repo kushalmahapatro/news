@@ -6,9 +6,11 @@ package app.km.in.dailybharat;
 
 public class ImagesModel {
     private String imageUrl;
+    private String newsTitle;
 
-    public ImagesModel(String url){
+    public ImagesModel(String url, String title){
         this.imageUrl=url;
+        this.newsTitle=title;
     }
 
     public String getImageUrl(){
@@ -17,5 +19,13 @@ public class ImagesModel {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getNewsTitle(){
+        return this.newsTitle;
+    }
+
+    public void setNewsTitle(String title){
+        this.newsTitle=title;
     }
 }

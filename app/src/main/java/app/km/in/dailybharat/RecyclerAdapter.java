@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
@@ -32,6 +33,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Glide.with(mContext).load(Images.get(position).getImageUrl()).thumbnail(1).centerCrop().error(R.drawable.notfound).placeholder(R.drawable.default1).into(holder.image);
+        holder.title.setText(Images.get(position).getNewsTitle());
     }
 
     @Override
@@ -41,9 +43,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
+        TextView title;
         public MyViewHolder(View itemView) {
             super(itemView);
             image= itemView.findViewById(R.id.card_image);
+            title= itemView.findViewById(R.id.headingNews);
         }
     }
 }

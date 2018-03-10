@@ -110,7 +110,7 @@ public class NightSettingActivity extends AppCompatActivity {
 
         } else if (value.equalsIgnoreCase("auto")) {
             umm.setNightMode(UiModeManager.MODE_NIGHT_AUTO);
-            edit.putString("value", "on");
+            edit.putString("value", "auto");
             edit.apply();
             edit.commit();
         }

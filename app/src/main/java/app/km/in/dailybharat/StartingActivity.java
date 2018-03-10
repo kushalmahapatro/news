@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -47,10 +48,25 @@ public class StartingActivity extends AppCompatActivity implements VolleyRespons
     private ArrayList<String> bannerTitle = new ArrayList<String>();
 
     RecyclerAdapter adapter;
-    RecyclerView entertainmentRecycler, newsRecycler, businessRecycler;
-    JSONArray ja, jaE, jaN, jaB;
-    Button ent, bus, news;
+    RecyclerView[] recycler;
+    Button[] button;
     RequestQueue mQueue;
+    LinearLayout[] layout;
+    JSONArray[] array;
+    JSONArray main;
+    int[] buttonId = {R.id.entButton, R.id.busBtn, R.id.newsBtn, R.id.healthBtn, R.id.scienceBtn, R.id.sportsBtn, R.id.technologyBtn};
+    int[] layoutId = {R.id.lay1, R.id.lay2, R.id.lay3, R.id.lay4, R.id.lay5, R.id.lay6, R.id.lay7};
+    int[] recyclerId = {R.id.entertainment_recycler, R.id.business_recycler, R.id.news_recycler, R.id.health_recycler, R.id.science_recycler, R.id.sports_recycler, R.id.technology_recycler};
+    String[] type = {"entertainment", "business", "news", "health", "science", "sports", "technology"};
+    String[] newsUrl = {
+            "https://newsapi.org/v2/top-headlines?country=in&category=entertainment&apiKey=1e2be97ff1724f6e883cecb345e1e65a",
+            "https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=1e2be97ff1724f6e883cecb345e1e65a",
+            "https://newsapi.org/v2/top-headlines?country=in&apiKey=27e55646d2a24b8eb1c8d26457d6d318",
+            "https://newsapi.org/v2/top-headlines?country=in&category=health&apiKey=69cfcd1cca3f44a9b65a57137645d1fe",
+            "https://newsapi.org/v2/top-headlines?country=in&category=science&apiKey=69cfcd1cca3f44a9b65a57137645d1fe",
+            "https://newsapi.org/v2/top-headlines?country=in&category=sports&apiKey=27e55646d2a24b8eb1c8d26457d6d318",
+            "https://newsapi.org/v2/top-headlines?country=in&category=technology&apiKey=27e55646d2a24b8eb1c8d26457d6d318"
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,45 +93,44 @@ public class StartingActivity extends AppCompatActivity implements VolleyRespons
         init();
         setBannerImages();
         mQueue = Volley.newRequestQueue(getApplicationContext());
-        getData("entertainment");
-        getData("business");
-        getData("news");
+        getDataFromServer();
+
 
 
     }
 
-
-    private void getData(String type) {
-        String url = null;
-        switch (type) {
-            case "entertainment":
-                url = "https://newsapi.org/v2/top-headlines?country=in&category=entertainment&apiKey=1e2be97ff1724f6e883cecb345e1e65a";
-                break;
-            case "business":
-                url = "https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=1e2be97ff1724f6e883cecb345e1e65a";
-                break;
-            case "news":
-                url = "https://newsapi.org/v2/top-headlines?country=in&apiKey=27e55646d2a24b8eb1c8d26457d6d318";
-                break;
+    private void getDataFromServer() {
+        for (int i = 0; i < type.length; i++) {
+            getData(type[i]);
         }
-        networkAction(url, type);
+    }
+
+
+    private void getData(String newsType) {
+        String url = null;
+        for (int i = 0; i < type.length; i++) {
+            if (newsType.equalsIgnoreCase(type[i])) {
+                url = newsUrl[i];
+            }
+        }
+        networkAction(url, newsType);
 
 
     }
 
-    private void setRecyclerView(RecyclerView view, ArrayList<String> images) {
+    private void setRecyclerView(RecyclerView view, ArrayList<String> images, ArrayList<String> title) {
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         view.setLayoutManager(layoutManager);
-        adapter = new RecyclerAdapter(getApplicationContext(), getData(images));
+        adapter = new RecyclerAdapter(getApplicationContext(), getData(images, title));
         view.setAdapter(adapter);
 
     }
 
-    private ArrayList<ImagesModel> getData(ArrayList<String> url) {
+    private ArrayList<ImagesModel> getData(ArrayList<String> url, ArrayList<String> title) {
         ArrayList<ImagesModel> Data = new ArrayList<>();
         for (int i = 0; i < url.size(); i++) {
-            ImagesModel image = new ImagesModel(url.get(i));
+            ImagesModel image = new ImagesModel(url.get(i), title.get(i));
             Data.add(image);
         }
         return Data;
@@ -133,18 +148,34 @@ public class StartingActivity extends AppCompatActivity implements VolleyRespons
         mPager.setAdapter(new BannerAdapter(StartingActivity.this, bannerImages, bannerTitle));
         CircleIndicator indicator = (CircleIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
-        entertainmentRecycler = findViewById(R.id.entertainment_recycler);
-        newsRecycler = findViewById(R.id.news_recycler);
-        businessRecycler = findViewById(R.id.business_recycler);
-        ent = findViewById(R.id.entButton);
-        bus= findViewById(R.id.busBtn);
-        news=findViewById(R.id.newsBtn);
-        ent.setVisibility(View.GONE);
-        bus.setVisibility(View.GONE);
-        news.setVisibility(View.GONE);
+        recycler = new RecyclerView[recyclerId.length];
+        button = new Button[buttonId.length];
+        layout = new LinearLayout[layoutId.length];
+        array = new JSONArray[recyclerId.length];
+        for (int i = 0; i < recyclerId.length; i++) {
+            recycler[i] = findViewById(recyclerId[i]);
+            button[i] = findViewById(buttonId[i]);
+            layout[i] = findViewById(layoutId[i]);
+            layout[i].setVisibility(View.GONE);
+            final int finalI = i;
+            button[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    intentData(finalI);
+                }
+            });
+        }
+
 
         // Auto start of viewpager
 
+    }
+
+    private void intentData(int i) {
+        Intent intent = new Intent(StartingActivity.this, MainActivity.class);
+        intent.putExtra("Data", array[i].toString());
+        intent.putExtra("type", type[i]);
+        startActivity(intent);
     }
 
     private void setBannerImages() {
@@ -171,9 +202,9 @@ public class StartingActivity extends AppCompatActivity implements VolleyRespons
         Bundle b = getIntent().getExtras();
         if (b != null) {
             String D = b.getString("Data");
-            ja = new JSONArray(D);
-            for (int i = 0; i < ja.length(); i++) {
-                JSONObject jsonObject = ja.getJSONObject(i);
+            main = new JSONArray(D);
+            for (int i = 0; i < main.length(); i++) {
+                JSONObject jsonObject = main.getJSONObject(i);
                 bannerImages.add(jsonObject.getString("urlToImage"));
                 bannerTitle.add(jsonObject.getString("title"));
             }
@@ -183,28 +214,32 @@ public class StartingActivity extends AppCompatActivity implements VolleyRespons
     @Override
     public void onResponse(JSONObject jsonRes, String tag) {
         final ArrayList<String> imagesUrl = new ArrayList<>();
+        final ArrayList<String> newsTitle = new ArrayList<>();
         try {
             String status = jsonRes.getString("status");
-            int total = jsonRes.getInt("totalResults");
             if (status.equals("ok")) {
                 JSONArray ja = jsonRes.getJSONArray("articles");
                 for (int i = 0; i < ja.length(); i++) {
                     JSONObject jsonObject = ja.getJSONObject(i);
                     imagesUrl.add(jsonObject.getString("urlToImage"));
+                    newsTitle.add(jsonObject.getString("title"));
+                    int id = 0;
                     if (tag.equalsIgnoreCase("entertainment")) {
-                        setRecyclerView(entertainmentRecycler, imagesUrl);
-                        ent.setVisibility(View.VISIBLE);
-                        jaE = ja;
-                    }
-                    else if (tag.equalsIgnoreCase("business")) {
-                        setRecyclerView(businessRecycler, imagesUrl);
-                        bus.setVisibility(View.VISIBLE);
-                        jaB = ja;
+                        id = 0;
+                    } else if (tag.equalsIgnoreCase("business")) {
+                        id = 1;
                     } else if (tag.equalsIgnoreCase("news")) {
-                        setRecyclerView(newsRecycler, imagesUrl);
-                        news.setVisibility(View.VISIBLE);
-                        jaN = ja;
+                        id = 2;
+                    } else if (tag.equalsIgnoreCase("health")) {
+                        id = 3;
+                    } else if (tag.equalsIgnoreCase("science")) {
+                        id = 4;
+                    } else if (tag.equalsIgnoreCase("sports")) {
+                        id = 5;
+                    } else if (tag.equalsIgnoreCase("technology")) {
+                        id = 6;
                     }
+                    setUp(id, ja, imagesUrl, newsTitle);
                 }
 
             }
@@ -216,11 +251,17 @@ public class StartingActivity extends AppCompatActivity implements VolleyRespons
 
     }
 
+    private void setUp(int i, JSONArray ja, ArrayList<String> imagesUrl, ArrayList<String> newsTitle) {
+        setRecyclerView(recycler[i], imagesUrl, newsTitle);
+        layout[i].setVisibility(View.VISIBLE);
+        array[i] = ja;
+    }
+
     @Override
     public void onError(VolleyError error, String tag) {
         Toast.makeText(getApplicationContext(), "Something Wrong: " + error.getMessage(), Toast.LENGTH_SHORT).show();
     }
-    public void EntertainmentButton(View view) {
+    /*public void EntertainmentButton(View view) {
         Intent intent = new Intent(StartingActivity.this, MainActivity.class);
         intent.putExtra("Data", jaE.toString());
         intent.putExtra("type", "entertainment");
@@ -238,5 +279,5 @@ public class StartingActivity extends AppCompatActivity implements VolleyRespons
         intent.putExtra("Data", jaN.toString());
         intent.putExtra("type", "news");
         startActivity(intent);
-    }
+    }*/
 }

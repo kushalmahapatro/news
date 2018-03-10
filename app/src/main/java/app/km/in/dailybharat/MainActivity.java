@@ -3,6 +3,8 @@ package app.km.in.dailybharat;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ParseException;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +21,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -43,6 +47,9 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences sp;
     public static View rootView;
     String type;
+    String[] typeNews = {"entertainment", "business", "news", "health", "science", "sports", "technology"};
+    int[] navId = {R.id.nav_entertainment, R.id.nav_business, R.id.nav_news, R.id.nav_health, R.id.nav_science, R.id.nav_sports, R.id.nav_technology};
+    ImageView toggelButton;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +70,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setElevation(0);
-        toolbar.setVisibility(View.GONE);
+        //toolbar.setVisibility(View.GONE);
         try {
             getBundle();
         } catch (JSONException e) {
@@ -80,11 +87,23 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-       /* ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toggelButton= findViewById(R.id.toggleButton);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
-        toggle.syncState();*/
+        toggle.syncState();
+        toggelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.openDrawer(GravityCompat.START);
+                } else {
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+            }
+        });
+
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -95,16 +114,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setSelectedNavigation(String type, NavigationView navigationView) {
-        switch (type) {
-            case "entertainment":
-                navigationView.setCheckedItem(R.id.nav_entertainment);
-                break;
-            case "business":
-                navigationView.setCheckedItem(R.id.nav_business);
-                break;
-            case "news":
-               navigationView.setCheckedItem(R.id.nav_news);
-                break;
+        for (int i=0; i<typeNews.length;i++){
+            if (type.equalsIgnoreCase(typeNews[i])){
+                navigationView.setCheckedItem(navId[i]);
+            }
         }
     }
 

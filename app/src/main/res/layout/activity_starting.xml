@@ -8,14 +8,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">x
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_weight="7">
+            android:layout_weight="5">
 
             <RelativeLayout
                 android:layout_width="fill_parent"
@@ -51,11 +51,13 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
+                    android:id="@+id/lay1"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
+                        android:gravity="center"
                         android:orientation="horizontal">
 
                         <TextView
@@ -71,10 +73,10 @@
                         <Button
                             android:id="@+id/entButton"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="end|center_vertical"
                             android:onClick="EntertainmentButton"
-                            android:textColor="@color/colorBackground"
+                            android:textColor="@color/buttonText"
                             android:background="@color/colorButton"
                             android:layout_margin="5dp"
                             android:text="View All" />
@@ -91,6 +93,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
+                    android:id="@+id/lay2"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -111,8 +114,10 @@
                         <Button
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:textColor="@color/colorBackground"
+                            android:layout_gravity="end|center_vertical"
+                            android:id="@+id/busBtn"
+                            android:onClick="BusinessButton"
+                            android:textColor="@color/buttonText"
                             android:background="@color/colorButton"
                             android:layout_margin="5dp"
                             android:text="View All" />
@@ -129,6 +134,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
+                    android:id="@+id/lay3"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -150,7 +156,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
-                            android:textColor="@color/colorBackground"
+                            android:id="@+id/newsBtn"
+                            android:onClick="NewsButton"
+                            android:textColor="@color/buttonText"
                             android:background="@color/colorButton"
                             android:layout_margin="5dp"
                             android:text="View All" />
@@ -167,6 +175,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
+                    android:id="@+id/lay4"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -188,9 +197,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
-                            android:textColor="@color/colorBackground"
+                            android:textColor="@color/buttonText"
                             android:background="@color/colorButton"
                             android:layout_margin="5dp"
+                            android:id="@+id/healthBtn"
+                            android:onClick="HealthButton"
                             android:text="View All" />
 
                     </LinearLayout>
@@ -204,6 +215,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
+                    android:id="@+id/lay5"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -225,9 +237,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
-                            android:textColor="@color/colorBackground"
+                            android:textColor="@color/buttonText"
                             android:background="@color/colorButton"
                             android:layout_margin="5dp"
+                            android:id="@+id/scienceBtn"
+                            android:onClick="ScienceButton"
                             android:text="View All" />
 
                     </LinearLayout>
@@ -241,6 +255,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
+                    android:id="@+id/lay6"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -262,9 +277,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
-                            android:textColor="@color/colorBackground"
+                            android:textColor="@color/buttonText"
                             android:background="@color/colorButton"
                             android:layout_margin="5dp"
+                            android:id="@+id/sportsBtn"
+                            android:onClick="SportsButton"
                             android:text="View All" />
 
                     </LinearLayout>
@@ -278,6 +295,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
+                    android:id="@+id/lay7"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -299,9 +317,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
-                            android:textColor="@color/colorBackground"
+                            android:textColor="@color/buttonText"
                             android:background="@color/colorButton"
                             android:layout_margin="5dp"
+                            android:onClick="TechnologyButton"
+                            android:id="@+id/technologyBtn"
                             android:text="View All" />
 
                     </LinearLayout>

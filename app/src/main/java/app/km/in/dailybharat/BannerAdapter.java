@@ -46,7 +46,7 @@ public class BannerAdapter extends PagerAdapter {
                 .findViewById(R.id.image);
         TextView myTitle= myImageLayout.findViewById(R.id.headingNews);
         myTitle.setText(title.get(position));
-        Glide.with(context).load(images.get(position)).thumbnail(1).centerCrop().into(myImage);
+        Glide.with(context).load(images.get(position)).thumbnail(1).centerCrop().error(R.drawable.notfound).placeholder(R.drawable.default1).into(myImage);
         view.addView(myImageLayout, 0);
         return myImageLayout;
     }
